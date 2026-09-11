@@ -1,14 +1,18 @@
-from flask import Flask, render_template
+"""Entry point for running the REELO Flask app locally.
 
-app = Flask(__name__)
+For production, run with a WSGI server instead, e.g.:
+    gunicorn "app:create_app()"
+"""
 
-@app.route("/")
-def hello_world():
-    return render_template("index.html")
+import os
 
-@app.route("/login")
-def login():
-    return render_template("login.html")
+from dotenv import load_dotenv
+
+load_dotenv()
+
+from app import create_app  # noqa: E402
+
+app = create_app(os.environ.get("FLASK_ENV", "development"))
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=app.config.get("DEBUG", True))
