@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="profile-container-ig">
+    <div class="profile-header-ig">
+        <div class="profile-avatar-wrapper">
+            <div class="profile-avatar-ring">
+                <img src="{{ current_user.avatar_url or 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80' }}" alt="User Profile Picture">
+            </div>
+        </div>
+        <div class="profile-details-ig">
+            <div class="profile-title-bar">
+                <h2 class="username-ig">{{ current_user.name }}</h2>
+                <a class="edit-profile-btn" href="{{ url_for('main.editor_studio') }}">Edit Profile</a>
+            </div>
+            {% if current_user.role == 'editor' %}
+            <ul class="profile-stats-ig">
+                <li><strong>{{ samples|length }}</strong> Work Samples</li>
+                <li><strong>{{ '%.1f'|format(current_user.rating or 5.0) }}</strong> Rating</li>
+                <li><strong>{{ current_user.reviews_count or 0 }}</strong> Reviews</li>
+            </ul>
+            {% else %}
+            <ul class="profile-stats-ig">
+                <li><strong>{{ projects_posted }}</strong> Projects Posted</li>
+                <li><strong>{{ editors_hired }}</strong> Editors Hired</li>
+                <li><strong>₹{{ '{:,}'.format(total_spent) }}</strong> Total Spent</li>
+            </ul>
+            {% endif %}
+            <div class="profile-bio-ig">
+                <strong>{{ 'Video Editor' if current_user.role == 'editor' else 'Content Creator' }}</strong>
+                <p>{{ current_user.bio or 'No bio added yet.' }}</p>
+                <span><i class="fa-solid fa-location-dot"></i> {{ current_user.location or 'Location not set' }}{% if current_user.website %} • {{ current_user.website }}{% endif %}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-tabs-ig">
+        <button class="tab-btn-ig active"><i class="fa-solid fa-table-cells"></i> {{ 'My Work Samples' if current_user.role == 'editor' else 'My Reels' }}</button>
+        <a class="tab-btn-ig" href="{{ url_for('main.saved') }}"><i class="fa-regular fa-bookmark"></i> Saved Editors</a>
+        <a class="tab-btn-ig" href="{{ url_for('main.projects') }}"><i class="fa-solid fa-user-tag"></i> Collaborations</a>
+    </div>
+
+    {% if current_user.role == 'editor' %}
+        {% if samples %}
+        <div class="reels-grid-ig">
+            {% for sample in samples %}
+            <div class="reel-grid-item-ig" onclick="openPreviewModal('{{ sample.title|replace("'", "") }}', '{{ sample.thumbnail_url }}')">
+                <img src="{{ sample.thumbnail_url }}" alt="Reel thumbnail">
+                <div class="overlay-ig">
+                    <span class="overlay-stat-ig"><i class="fa-solid fa-play"></i> {{ sample.views or '0' }}</span>
+                    <span class="overlay-stat-ig"><i class="fa-solid fa-heart"></i> {{ sample.likes or '0' }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <i class="fa-solid fa-film"></i>
+            <p>No work samples yet. Add one from Editor Studio.</p>
+        </div>
+        {% endif %}
+    {% else %}
+        <div class="empty-state">
+            <i class="fa-solid fa-list-check"></i>
+            <p>Your posted projects show up under <a href="{{ url_for('main.projects') }}" style="color: var(--yt-accent);">My Work</a>.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

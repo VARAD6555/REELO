@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}REELO{% endblock %} - Login / Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body>
+
+    <div class="water-bg-container">
+        <div class="droplet drop-1"></div>
+        <div class="droplet drop-2"></div>
+        <div class="droplet drop-3"></div>
+        <div class="droplet drop-4"></div>
+    </div>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+
+            <div class="brand-header">
+                <a href="{{ url_for('auth.login') }}" class="brand-logo">
+                    <i class="fa-brands fa-youtube"></i> REELO
+                </a>
+                <p>Short-Form Video Creator & Editor Marketplace</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div style="margin-bottom: 18px;">
+                    {% for category, message in messages %}
+                        <div class="flash-msg {{ category }}" style="position: static; margin-bottom: 8px;">{{ message }}</div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <div class="auth-tabs">
+                <a href="{{ url_for('auth.login') }}" class="tab-btn {{ 'active' if request.endpoint == 'auth.login' }}">Sign In</a>
+                <a href="{{ url_for('auth.register') }}" class="tab-btn {{ 'active' if request.endpoint == 'auth.register' }}">Create Account</a>
+            </div>
+
+            {% block form %}{% endblock %}
+
+            <div class="back-home">
+                <a href="{{ url_for('auth.login') }}"><i class="fa-solid fa-arrow-left"></i> Back to REELO</a>
+            </div>
+
+        </div>
+    </div>
+</body>
+</html>

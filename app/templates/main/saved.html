@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Saved Editors{% endblock %}
+{% block content %}
+<div style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">
+    <i class="fa-solid fa-bookmark" style="color: var(--yt-red);"></i> Saved Editors
+</div>
+<p style="font-size: 13px; color: var(--yt-text-secondary); margin-bottom: 20px;">Your favorite saved video editors for quick hiring.</p>
+
+{% if saved_rows %}
+<div class="cards-grid">
+    {% for row in saved_rows %}
+    {% set editor = row.saved_editor %}
+    <div class="yt-card">
+        <div class="thumbnail-container">
+            <img src="{{ editor.avatar_url or 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=500&q=80' }}" alt="Work">
+            <div class="price-badge-yt">₹{{ '{:,}'.format(editor.price_per_short or 0) }} / Short</div>
+        </div>
+        <div class="card-details-flex">
+            <img src="{{ editor.avatar_url or 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80' }}" class="channel-avatar" alt="Avatar">
+            <div class="meta-info">
+                <h3>{{ editor.name }} • {{ editor.editing_style or 'Video Editor' }}</h3>
+                <div class="rating-badge-container">
+                    <i class="fa-solid fa-star"></i> {{ '%.1f'|format(editor.rating or 5.0) }} ★ ({{ editor.reviews_count or 0 }} Reviews)
+                </div>
+                <div class="card-action-row">
+                    <button type="button" class="btn-sm-action hire"
+                        onclick="openHireModal('{{ url_for('main.hire', editor_id=editor.id) }}', '{{ editor.name|replace("'", "") }}', {{ editor.price_per_short or 0 }}, '{{ '%.1f'|format(editor.rating or 5.0) }} ★')">Hire Now</button>
+                    <form method="post" action="{{ url_for('main.toggle_save', editor_id=editor.id) }}" style="display:inline;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn-sm-action">Remove</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="fa-solid fa-bookmark"></i>
+    <p>No saved editors yet. Save one from the <a href="{{ url_for('main.dashboard') }}" style="color: var(--yt-accent);">dashboard</a>.</p>
+</div>
+{% endif %}
+{% endblock %}

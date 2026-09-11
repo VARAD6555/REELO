@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Editor Studio{% endblock %}
+{% block content %}
+<div style="font-size: 20px; font-weight: 700; margin-bottom: 20px;">
+    <i class="fa-solid fa-gear" style="color: var(--yt-accent);"></i> Editor Profile & Setup
+</div>
+<form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="dashboard-layout">
+        <div class="yt-box">
+            <h3 style="font-size: 16px; font-weight: 500; margin-bottom: 16px;">Profile Info</h3>
+            <div class="form-group-yt">
+                <label>Your Name</label>
+                <input type="text" name="name" value="{{ current_user.name }}">
+            </div>
+            <div class="form-group-yt">
+                <label>Price per Short (₹)</label>
+                <input type="number" name="price_per_short" value="{{ current_user.price_per_short or 2500 }}">
+            </div>
+            <div class="form-group-yt">
+                <label>Editing Style</label>
+                <select name="editing_style">
+                    {% for style in ["Talking Head & Podcast", "Cinematic Reels & Vlogs", "Gaming Shorts & AMV", "Motion Graphics"] %}
+                    <option {{ 'selected' if current_user.editing_style == style }}>{{ style }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="yt-btn-primary" style="width: 100%; border-radius: 10px;">Save Profile</button>
+            {% if current_user.role != 'editor' %}
+            <p style="font-size: 12px; color: var(--yt-text-secondary); margin-top: 10px;">Saving will list you as an editor in the marketplace.</p>
+            {% endif %}
+        </div>
+        <div class="yt-box">
+            <h3 style="font-size: 16px; font-weight: 500; margin-bottom: 6px;">Add Work Samples</h3>
+            <p style="font-size: 13px; color: var(--yt-text-secondary); margin-bottom: 16px;">Add YouTube Shorts or Google Drive links to show your editing skills.</p>
+            <div class="form-group-yt">
+                <label>Video Link</label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" name="sample_link" placeholder="Paste link here...">
+                    <button type="submit" class="btn-sm-action" style="padding: 0 16px;">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

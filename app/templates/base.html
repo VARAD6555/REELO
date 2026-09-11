@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}REELO{% endblock %} - Short Video Creator & Editor Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="water-bg-container">
+        <div class="droplet drop-1"></div>
+        <div class="droplet drop-2"></div>
+        <div class="droplet drop-3"></div>
+        <div class="droplet drop-4"></div>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flash-stack">
+            {% for category, message in messages %}
+                <div class="flash-msg {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <header>
+        <div class="nav-left">
+            <a href="{{ url_for('main.dashboard') }}" class="brand-logo" style="text-decoration: none;">
+                <div class="ig-logo-ring">
+                    <div class="logo-inner">
+                        <i class="fa-brands fa-youtube"></i>
+                    </div>
+                </div>
+                <span>REELO</span>
+            </a>
+        </div>
+        <div class="nav-center">
+            <form method="get" action="{{ url_for('main.dashboard') }}" style="display: contents;">
+                <input type="text" name="q" value="{{ request.args.get('q', '') }}" placeholder="Search catchy titles, movie styles, gaming shorts...">
+                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+        </div>
+        <div class="nav-right">
+            <a class="yt-btn-primary" href="{{ url_for('main.editor_studio') }}" style="text-decoration:none; display:inline-block;">
+                {% if current_user.role == 'editor' %}Editor Studio{% else %}Switch to Editor Area{% endif %}
+            </a>
+            <a class="icon-btn" href="{{ url_for('main.messages') }}" title="Messages" style="text-decoration:none;">
+                <i class="fa-regular fa-paper-plane"></i>
+                <span class="dot"></span>
+            </a>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <sidebar>
+            <a class="side-item {{ 'active' if request.endpoint == 'main.dashboard' }}" href="{{ url_for('main.dashboard') }}"><i class="fa-solid fa-house"></i> Home</a>
+            <a class="side-item {{ 'active' if request.endpoint == 'main.profile' }}" href="{{ url_for('main.profile') }}"><i class="fa-solid fa-circle-user"></i> My Profile</a>
+            <a class="side-item {{ 'active' if request.endpoint == 'main.projects' }}" href="{{ url_for('main.projects') }}"><i class="fa-solid fa-list-check"></i> My Work</a>
+            <a class="side-item {{ 'active' if request.endpoint == 'main.payments' }}" href="{{ url_for('main.payments') }}"><i class="fa-solid fa-wallet"></i> Payments</a>
+            <a class="side-item {{ 'active' if request.endpoint == 'main.saved' }}" href="{{ url_for('main.saved') }}"><i class="fa-solid fa-bookmark"></i> Saved Editors</a>
+            <a class="side-item {{ 'active' if request.endpoint == 'main.messages' }}" href="{{ url_for('main.messages') }}"><i class="fa-regular fa-paper-plane"></i> Chat Messages</a>
+            <hr class="hr-line">
+            <a class="side-item {{ 'active' if request.endpoint == 'main.editor_studio' }}" href="{{ url_for('main.editor_studio') }}"><i class="fa-solid fa-user-pen"></i> Editor Profile</a>
+            <a class="side-item" href="{{ url_for('auth.logout') }}"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
+        </sidebar>
+
+        <div class="content-area">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <!-- Video Preview Lightbox Modal -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal-box" style="width: 620px; text-align: center;">
+            <h3 id="previewTitle" style="font-size: 16px; font-weight: 500; margin-bottom: 14px;">Demo Video</h3>
+            <div style="width: 100%; height: 340px; background: #000; border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative;">
+                <img id="previewImg" src="" style="width: 100%; height: 100%; object-fit: cover;" alt="Preview">
+                <div class="preview-play-btn">
+                    <i class="fa-solid fa-play" style="color: #fff; font-size: 22px; margin-left: 3px;"></i>
+                </div>
+            </div>
+            <button class="btn-sm-action" style="margin-top: 18px; padding: 10px;" onclick="closePreviewModal()">Close Demo</button>
+        </div>
+    </div>
+
+    <!-- Hire Modal Overlay -->
+    <div class="modal-overlay" id="hireModalOverlay">
+        <form class="modal-box" id="hireForm" method="post" action="">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <h3 id="hireModalTitle" style="font-size: 18px; font-weight: 600; margin-bottom: 6px;">Hire Editor</h3>
+            <p id="hireModalSubtitle" style="font-size: 13px; color: var(--yt-text-secondary); margin-bottom: 20px;"></p>
+            <div class="form-group-yt">
+                <label>Video Title / Name</label>
+                <input type="text" name="title" id="projectBriefTitle" value="Custom Short Order">
+            </div>
+            <div class="form-group-yt">
+                <label>Number of Shorts</label>
+                <input type="number" name="quantity" id="hireQuantity" value="1" min="1" oninput="updateModalTotal()">
+            </div>
+            <div class="form-group-yt">
+                <label>Payment Method</label>
+                <select name="payment_method" id="paymentMethodSelect">
+                    <option>UPI / GPay / PhonePe</option>
+                    <option>Net Banking</option>
+                    <option>Debit / Credit Card</option>
+                </select>
+            </div>
+            <div class="form-group-yt">
+                <label>Instructions for the Editor</label>
+                <textarea rows="3" name="instructions" placeholder="Explain how you want the video edited..."></textarea>
+            </div>
+            <p id="hireModalTotal" style="font-size: 13px; color: var(--yt-text-secondary); margin-top: 4px;"></p>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" class="btn-sm-action" style="padding: 10px;" onclick="closeHireModal()">Cancel</button>
+                <button type="submit" class="yt-btn-primary" style="flex: 1; border-radius: 10px;">Pay & Lock Money Safely</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

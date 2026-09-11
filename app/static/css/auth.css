@@ -1,0 +1,355 @@
+        :root {
+            --glass-bg: rgba(15, 12, 25, 0.6);
+            --glass-surface: rgba(25, 20, 40, 0.5);
+            --glass-surface-hover: rgba(45, 30, 70, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-border-hover: rgba(236, 72, 153, 0.5);
+            --yt-red: #ff0033;
+            --yt-text-main: #f8f9fa;
+            --yt-text-secondary: #cbd5e1;
+            --yt-accent: #ec4899; /* Instagram Pink Accent */
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: #040208;
+            color: var(--yt-text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* --- INSTAGRAM-INSPIRED VIBRANT LIQUID BACKGROUND --- */
+        .water-bg-container {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            overflow: hidden;
+            z-index: -1;
+            background: #040208;
+        }
+
+        .droplet {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.65;
+            animation: floatDroplets 15s infinite alternate ease-in-out;
+            mix-blend-mode: screen;
+        }
+
+        .drop-1 {
+            width: 600px; height: 600px;
+            background: rgba(131, 58, 180, 0.55);
+            top: -150px; left: -100px;
+            animation-duration: 14s;
+        }
+
+        .drop-2 {
+            width: 650px; height: 650px;
+            background: rgba(253, 29, 29, 0.45);
+            bottom: -200px; right: -100px;
+            animation-duration: 18s;
+            animation-delay: -3s;
+        }
+
+        .drop-3 {
+            width: 500px; height: 500px;
+            background: rgba(247, 119, 55, 0.4);
+            top: 35%; left: 40%;
+            animation-duration: 12s;
+            animation-delay: -6s;
+        }
+
+        .drop-4 {
+            width: 450px; height: 450px;
+            background: rgba(56, 189, 248, 0.3);
+            bottom: 10%; left: 10%;
+            animation-duration: 16s;
+            animation-delay: -9s;
+        }
+
+        @keyframes floatDroplets {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            50% { transform: translate(80px, 60px) scale(1.15) rotate(45deg); }
+            100% { transform: translate(-60px, -70px) scale(0.9) rotate(-30deg); }
+        }
+
+        @keyframes smoothFadeIn {
+            from { opacity: 0; transform: translateY(15px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* --- AUTH CONTAINER --- */
+        .auth-wrapper {
+            width: 100%;
+            max-width: 440px;
+            padding: 20px;
+            z-index: 10;
+            animation: smoothFadeIn 0.5s var(--transition) forwards;
+        }
+
+        .auth-card {
+            background: var(--glass-surface);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 24px;
+            padding: 40px 36px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(221, 42, 123, 0.15);
+            transition: var(--transition);
+        }
+
+        .auth-card:hover {
+            border-color: var(--glass-border-hover);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8), 0 0 50px rgba(221, 42, 123, 0.25);
+        }
+
+        .brand-header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .brand-logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--yt-text-main);
+            text-decoration: none;
+            margin-bottom: 8px;
+            transition: var(--transition);
+        }
+
+        .brand-logo:hover {
+            transform: scale(1.05);
+        }
+
+        .brand-logo i {
+            color: var(--yt-red);
+            font-size: 30px;
+            filter: drop-shadow(0 0 12px rgba(255, 0, 51, 0.8));
+        }
+
+        .brand-header p {
+            font-size: 13px;
+            color: var(--yt-text-secondary);
+        }
+
+        /* --- TABS SWITCHER (Login / Sign Up) --- */
+        .auth-tabs {
+            display: flex;
+            background: rgba(10, 8, 18, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--yt-text-secondary);
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #f58529, #dd2a7b);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(221, 42, 123, 0.4);
+        }
+
+        /* --- FORM ELEMENTS --- */
+        .form-panel {
+            display: none;
+        }
+
+        .form-panel.active {
+            display: block;
+            animation: smoothFadeIn 0.35s ease forwards;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--yt-text-secondary);
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .input-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-box i {
+            position: absolute;
+            left: 14px;
+            color: var(--yt-text-secondary);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .form-group input {
+            width: 100%;
+            background: rgba(10, 8, 18, 0.75);
+            border: 1px solid var(--glass-border);
+            padding: 12px 14px 12px 42px;
+            border-radius: 12px;
+            color: var(--yt-text-main);
+            font-size: 14px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            border-color: var(--yt-accent);
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+            background: rgba(15, 12, 25, 0.95);
+        }
+
+        .form-group input:focus ~ i {
+            color: var(--yt-accent);
+        }
+
+        .auth-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #f58529, #dd2a7b, #8134af);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(221, 42, 123, 0.4);
+            margin-top: 6px;
+        }
+
+        .auth-btn:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(221, 42, 123, 0.6);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 22px 0;
+            color: var(--yt-text-secondary);
+            font-size: 12px;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .divider span {
+            padding: 0 10px;
+        }
+
+        .social-login-btn {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--yt-text-main);
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+        }
+
+        .social-login-btn:hover {
+            background: var(--glass-surface-hover);
+            border-color: var(--glass-border-hover);
+            transform: translateY(-1px);
+        }
+
+        .social-login-btn i {
+            font-size: 16px;
+            color: #ea4335;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: var(--yt-text-secondary);
+            font-size: 13px;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .back-home a:hover {
+            color: var(--yt-accent);
+        }
+/* --- ADDED: anchor-based tabs, flash messages, field errors --- */
+.auth-tabs a.tab-btn {
+    text-decoration: none;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flash-msg {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid var(--glass-border);
+}
+.flash-msg.success { background: rgba(34, 197, 94, 0.18); border-color: rgba(34, 197, 94, 0.4); }
+.flash-msg.error { background: rgba(239, 68, 68, 0.18); border-color: rgba(239, 68, 68, 0.4); }
+.flash-msg.info { background: rgba(56, 189, 248, 0.18); border-color: rgba(56, 189, 248, 0.4); }
+
+.field-error {
+    color: #f87171;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+select.form-select {
+    width: 100%;
+    background: rgba(10, 8, 18, 0.75);
+    border: 1px solid var(--glass-border);
+    padding: 12px 14px;
+    border-radius: 12px;
+    color: var(--yt-text-main);
+    font-size: 14px;
+    outline: none;
+}
