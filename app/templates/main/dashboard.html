@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="marketplace-toolbar">
+    <div class="filter-section">
+        {% for value, label in categories %}
+            <a class="chip-btn {{ 'active' if active_category == value }}"
+               href="{{ url_for('main.dashboard', category=value, q=search) }}">{{ label }}</a>
+        {% endfor %}
+    </div>
+    <form method="get" action="{{ url_for('main.dashboard') }}" style="display: contents;">
+        <input type="hidden" name="category" value="{{ active_category }}">
+        <input type="hidden" name="q" value="{{ search }}">
+        <select class="sort-dropdown" name="sort" onchange="this.form.submit()">
+            <option value="rating" {{ 'selected' if request.args.get('sort', 'rating') == 'rating' }}>Top Rated</option>
+            <option value="price" {{ 'selected' if request.args.get('sort') == 'price' }}>Price: Low to High</option>
+        </select>
+    </form>
+</div>
+
+{% if editors %}
+<div class="cards-grid" id="editorCardsGrid">
+    {% for editor in editors %}
+    {% set sample = editor.samples.first() %}
+    <div class="yt-card" data-category="{{ editor.categories }}">
+        <div class="thumbnail-container"
+             {% if sample %}onclick="openPreviewModal('{{ (editor.name ~ ' Sample Video')|replace("'", "") }}', '{{ sample.thumbnail_url }}')"{% endif %}>
+            <img src="{{ sample.thumbnail_url if sample else (editor.avatar_url or 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=500&q=80') }}" alt="Work sample">
+            <span class="delivery-badge"><i class="fa-solid fa-clock"></i> {{ editor.delivery_time or 'Delivery TBD' }}</span>
+            <div class="price-badge-yt">₹{{ '{:,}'.format(editor.price_per_short or 0) }} / Short</div>
+            {% if sample %}
+            <div class="preview-overlay-btn"><span><i class="fa-solid fa-play"></i> Watch Demo</span></div>
+            {% endif %}
+        </div>
+        <div class="card-details-flex">
+            <img src="{{ editor.avatar_url or 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80' }}" class="channel-avatar" alt="Avatar">
+            <div class="meta-info">
+                <h3>{{ editor.name }} • {{ editor.editing_style or 'Video Editor' }}</h3>
+                <p>{{ editor.location or '' }}</p>
+                <div class="rating-badge-container">
+                    <i class="fa-solid fa-star"></i> {{ '%.1f'|format(editor.rating or 5.0) }} ★ ({{ editor.reviews_count or 0 }} Reviews)
+                </div>
+                <div class="card-action-row">
+                    {% if current_user.role == 'creator' %}
+                    <button type="button" class="btn-sm-action hire"
+                        onclick="openHireModal('{{ url_for('main.hire', editor_id=editor.id) }}', '{{ editor.name|replace("'", "") }}', {{ editor.price_per_short or 0 }}, '{{ '%.1f'|format(editor.rating or 5.0) }} ★')">Hire Now</button>
+                    <form method="post" action="{{ url_for('main.toggle_save', editor_id=editor.id) }}" style="display:inline;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn-sm-action">{{ 'Saved ✓' if editor.id in saved_ids else 'Save' }}</button>
+                    </form>
+                    {% endif %}
+                    <a class="btn-sm-action" href="{{ url_for('main.messages', partner_id=editor.id) }}">Chat</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <p>No editors match that search or filter yet.</p>
+</div>
+{% endif %}
+{% endblock %}

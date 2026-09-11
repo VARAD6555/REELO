@@ -33,7 +33,9 @@ with a real database backing authentication and the marketplace itself.
 
 ```
 REELO/
-├── app.py                 # entry point (flask run / gunicorn "app:create_app()")
+├── wsgi.py                 # entry point (flask run / gunicorn "wsgi:app")
+│                            # named wsgi.py, not app.py, to avoid colliding
+│                            # with the app/ package (see comment in the file)
 ├── config.py               # Dev/Test/Prod config from environment variables
 ├── requirements.txt
 ├── .env.example             # copy to .env and fill in
@@ -64,7 +66,7 @@ pip install -r requirements.txt
 
 cp .env.example .env            # set SECRET_KEY at minimum
 flask seed-db                   # creates tables + demo accounts
-flask run                       # or: python app.py
+flask run                       # or: python wsgi.py
 ```
 
 Visit `http://127.0.0.1:5000`. Demo accounts (seeded, password

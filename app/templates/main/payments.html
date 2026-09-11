@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Payments{% endblock %}
+{% block content %}
+<div style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">
+    <i class="fa-solid fa-wallet" style="color: #38bdf8;"></i> Payment History
+</div>
+<p style="font-size: 13px; color: var(--yt-text-secondary); margin-bottom: 20px;">Check all your past payments, deposits, and money records.</p>
+
+<div class="finance-stats-grid">
+    <div class="stat-card">
+        <span class="title">Total Spent</span>
+        <span class="value">₹{{ '{:,}'.format(total_spent) }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="title">Safe Deposit Held</span>
+        <span class="value">₹{{ '{:,}'.format(deposit_held) }}</span>
+    </div>
+    <div class="stat-card">
+        <span class="title">Paid to Editors</span>
+        <span class="value">₹{{ '{:,}'.format(paid_out) }}</span>
+    </div>
+</div>
+
+{% if payments %}
+<div class="yt-table-container">
+    <table class="yt-table">
+        <thead>
+            <tr>
+                <th>Payment ID</th>
+                <th>Video Title / Reference</th>
+                <th>Payment Method</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>#{{ payment.txn_reference }}</td>
+                <td>{{ payment.order.title }} ({{ payment.order.editor.name }})</td>
+                <td><i class="fa-solid fa-mobile-screen-button" style="color: #22c55e;"></i> {{ payment.method }}</td>
+                <td>₹{{ '{:,}'.format(payment.amount) }}</td>
+                <td>{{ payment.created_at.strftime('%b %d, %Y') }}</td>
+                <td>
+                    {% if payment.status == 'deposit_held' %}
+                        <span class="status-pill review">Safe Deposit Held</span>
+                    {% else %}
+                        <span class="status-pill completed">Paid to Editor</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="fa-solid fa-wallet"></i>
+    <p>No payments recorded yet.</p>
+</div>
+{% endif %}
+{% endblock %}

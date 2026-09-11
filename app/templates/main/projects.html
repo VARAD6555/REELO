@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}My Work{% endblock %}
+{% block content %}
+<div style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">
+    <i class="fa-solid fa-list-check" style="color: var(--yt-accent);"></i> Active Work & Order Status
+</div>
+<p style="font-size: 13px; color: var(--yt-text-secondary); margin-bottom: 20px;">
+    Track your ongoing video orders, check draft videos, and approve work.
+</p>
+
+{% if orders %}
+<div class="yt-table-container">
+    <table class="yt-table">
+        <thead>
+            <tr>
+                <th>Video Title</th>
+                <th>{{ 'Creator' if current_user.role == 'editor' else 'Editor' }}</th>
+                <th>Quantity</th>
+                <th>Payment Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td><strong>{{ order.title }}</strong><br><span style="font-size: 12px; color: var(--yt-text-secondary);">{{ order.instructions or 'Direct Safe Contract' }}</span></td>
+                <td>{{ order.editor.name if current_user.role == 'creator' else order.creator.name }}</td>
+                <td>{{ order.quantity }} Short(s)</td>
+                <td>
+                    {% if order.status == 'deposit_held' %}
+                        <span class="status-pill review">Safe Deposit Held</span>
+                    {% elif order.status == 'completed' %}
+                        <span class="status-pill completed">Completed</span>
+                    {% else %}
+                        <span class="status-pill review">{{ order.status|replace('_', ' ')|title }}</span>
+                    {% endif %}
+                </td>
+                <td><button type="button" class="btn-sm-action hire" onclick="openPreviewModal('{{ order.title|replace("'", "") }}', 'https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=800&q=80')">Check Draft</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="empty-state">
+    <i class="fa-solid fa-list-check"></i>
+    <p>No projects yet. {% if current_user.role == 'creator' %}Hire an editor from the <a href="{{ url_for('main.dashboard') }}" style="color: var(--yt-accent);">dashboard</a> to get started.{% endif %}</p>
+</div>
+{% endif %}
+{% endblock %}
